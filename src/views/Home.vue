@@ -1,7 +1,7 @@
 <template>
-  <HelloWorld />
+  <Plp />
 </template>
 
 <script setup>
-  import HelloWorld from '@/components/HelloWorld.vue'
+  import Plp from '@/components/Plp.vue'
 </script>
