@@ -1,6 +1,7 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router'
 import PDP from "@/components/Pdp";
+import CART from "@/components/CART";
 
 const routes = [
   {
@@ -21,6 +22,11 @@ const routes = [
     path: "/pdp/:id",
     name: "pdp",
     component: PDP,
+  },
+  {
+    path: "/cart",
+    name: "cart",
+    component: CART,
   },
 ]
 

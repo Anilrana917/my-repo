@@ -1,4 +1,6 @@
 <template>
+  <h2 class="pa-2 text-center head">Shopper's Point</h2>
+  <v-btn @click="toggleTheme" class="toggelTheme">toggle theme</v-btn>
   <div class="plp-page">
     <div class="search-box">
       <v-text-field
@@ -11,10 +13,11 @@
     <div class="inner-div">
       <v-card
         :loading="loading"
-        class="mx-auto my-12"
+        class="mx-auto my-12 cards"
         max-width="374"
         v-for="item of result"
         :key="item.id"
+        :class="item.category"
       >
         <template v-slot:loader="{ isActive }">
           <v-progress-linear
@@ -66,9 +69,9 @@
           <v-btn
             color="deep-purple-lighten-2"
             variant="text"
-            @click="addToCart(item)"
+            :to="{ name: 'pdp', params: { id: item.id } }"
           >
-            Add To Card
+            More Details & Cart
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -78,41 +81,50 @@
 
 <script>
 import axios from "axios";
+import { useTheme } from 'vuetify'
 export default {
   name: "Plp",
+
   data: () => ({
     loading: false,
     selection: 1,
     result: [],
-    searchQuery: '',
-    serachR: []
+    searchQuery: "",
+    serachR: [],
   }),
+  setup () {
+    const theme = useTheme()
+
+    return {
+      theme,
+      toggleTheme: () => theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+    }
+  },
   methods: {
     fetchData() {
       axios
         .get("https://fakestoreapi.com/products")
         .then((res) => {
           this.result = res.data;
-          console.log("33333", this.result);
+          // console.log("33333", this.result);
         })
         .catch((err) => console.error(err));
     },
-    addToCart(event) {
-      console.log(event, "event");
-      this.loading = true;
-      setTimeout(() => (this.loading = false), 2000);
+    filteredResults() {
+      if (this.searchQuery.trim() === "") {
+        return this.serachR;
+      }
+      const searchQuery = this.searchQuery.toLowerCase().trim();
+
+      let cards = document.querySelectorAll(".inner-div .cards");
+      cards.forEach((i) => {
+        if (i.className.includes(searchQuery)) {
+          i.style.display = "block";
+        } else if (!i.className.includes(searchQuery)) {
+          i.style.display = "none";
+        }
+      });
     },
-  },
-  computed: {
-    // filteredResults() {
-    //   if (this.searchQuery.trim() === "") {
-    //     return this.serachR;
-    //   }
-    //   const searchQuery = this.searchQuery.toLowerCase().trim();
-    //   return this.result.filter((item) =>
-    //   console.log(item.title.toLowerCase().includes(this.searchQuery),'item')
-    //   );
-    // },
   },
   mounted() {
     this.fetchData();
@@ -129,6 +141,26 @@ export default {
   width: 50% !important;
   margin: auto;
   margin-top: 24px;
+}
+.head {
+    font-family: cursive;
+    font-style: oblique;
+    background: #6f90cb;
+}
+.cards .v-img{
+  background: #fff !important;
+}
+.toggelTheme {
+    position: absolute;
+    right: 0px;
+    border-radius: 0;
+    top: 8px;
+}
+@media only screen and (max-width: 768px) {
+  .search-box {
+    width: 94% !important;
+  }
+  
 }
 </style>
 
